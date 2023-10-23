@@ -1,20 +1,20 @@
-#resource "aws_eks_node_group" "test-eks-nodegroup" {
+#resource "aws_eks_node_group" "skk-eks-nodegroup" {
 #
 #  // 프로비저닝 전 IAM Role 생성 필요
 #  depends_on = [
-#    aws_iam_role_policy_attachment.test-eks_iam_cluster_AmazonEKSWorkerNodePolicy,
-#    aws_iam_role_policy_attachment.test-eks_iam_cluster_AmazonEC2ContainerRegistryReadOnly,
-#    aws_iam_role_policy_attachment.test-eks_iam_cluster_AmazonEKS_CNI_Policy
+#    aws_iam_role_policy_attachment.skk-eks_iam_cluster_AmazonEKSWorkerNodePolicy,
+#    aws_iam_role_policy_attachment.skk-eks_iam_cluster_AmazonEC2ContainerRegistryReadOnly,
+#    aws_iam_role_policy_attachment.skk-eks_iam_cluster_AmazonEKS_CNI_Policy
 #  ]
 #
 #  // 클러스터 이름
-#  cluster_name = aws_eks_cluster.test-eks-cluster.name
+#  cluster_name = aws_eks_cluster.skk-eks-cluster.name
 #
 #  // 이름
-#  node_group_name = "test-eks-nodegroup"
+#  node_group_name = "skk-eks-nodegroup"
 #
 #  // 노드 IAM 역할
-#  node_role_arn = aws_iam_role.test-eks_iam_nodes.arn
+#  node_role_arn = aws_iam_role.skk-eks_iam_nodes.arn
 #
 #  // AMI 유형
 #  ami_type = "AL2_x86_64"
@@ -43,9 +43,9 @@
 #  }
 #
 #  // 서브넷
-#  subnet_ids = aws_subnet.test-public-subnet[*].id
+#  subnet_ids = aws_subnet.skk-public-subnet[*].id
 #
 #  tags = {
-#    "Name" = "TEST-EKS-WORKER-NODES"
+#    "Name" = "skk-EKS-WORKER-NODES"
 #  }
 #}

@@ -1,7 +1,7 @@
 // Default SG
-resource "aws_default_security_group" "test-vpc_sg_default"{
+resource "aws_default_security_group" "skk-vpc_sg_default"{
 
-  vpc_id = aws_vpc.test-vpc.id
+  vpc_id = aws_vpc.skk-vpc.id
 
   ingress {
     from_port = 0
@@ -20,10 +20,10 @@ resource "aws_default_security_group" "test-vpc_sg_default"{
 
 ########### Bastion (EC2 Instance) Security Group ###########
 
-resource "aws_security_group" "test-sg-bastion" {
+resource "aws_security_group" "skk-sg-bastion" {
 
-  name   = "test-sg-bastion"
-  vpc_id = aws_vpc.test-vpc.id
+  name   = "skk-sg-bastion"
+  vpc_id = aws_vpc.skk-vpc.id
 
   ingress {
     description = "ingress security_group_rule for bastion"
@@ -42,29 +42,29 @@ resource "aws_security_group" "test-sg-bastion" {
   }
 
   tags = {
-    Name = "test-sg-bastion"
+    Name = "skk-sg-bastion"
   }
 }
 
 ########### EKS Security Group ###########
 // EKS Control Plane SG
 // - 컨트롤 플레인과 워커 노드 그룹 간의 통신
-resource "aws_security_group" "test-eks_sg_controlplane" {
+resource "aws_security_group" "skk-eks_sg_controlplane" {
 
-    vpc_id = aws_vpc.test-vpc.id
-    name = "Test-EKS-SG-ControlPlane"
+    vpc_id = aws_vpc.skk-vpc.id
+    name = "skk-EKS-SG-ControlPlane"
     description = "Communication between the control plane and worker nodegroups"
 
     tags = {
-      "Name" = "Test-EKS-ControlPlane-SG"
+      "Name" = "skk-EKS-ControlPlane-SG"
     }
 }
 
 // - 노드가 클러스터 API 서버와 통신하도록 허용
-resource "aws_security_group_rule" "test-eks_sg_cluster_inbound" {
+resource "aws_security_group_rule" "skk-eks_sg_cluster_inbound" {
 
-    security_group_id = aws_security_group.test-eks_sg_controlplane.id
-    source_security_group_id = aws_security_group.test-eks_sg_nodes.id
+    security_group_id = aws_security_group.skk-eks_sg_controlplane.id
+    source_security_group_id = aws_security_group.skk-eks_sg_nodes.id
 
     type = "ingress"
     from_port = 443
@@ -74,10 +74,10 @@ resource "aws_security_group_rule" "test-eks_sg_cluster_inbound" {
 }
 
 // - 클러스터 API 서버가 워커 노드와 통신하도록 허용
-resource "aws_security_group_rule" "test-eks_sg_cluster_outbound" {
+resource "aws_security_group_rule" "skk-eks_sg_cluster_outbound" {
 
-    security_group_id = aws_security_group.test-eks_sg_controlplane.id
-    source_security_group_id = aws_security_group.test-eks_sg_nodes.id
+    security_group_id = aws_security_group.skk-eks_sg_controlplane.id
+    source_security_group_id = aws_security_group.skk-eks_sg_nodes.id
 
     type = "egress"
     from_port = 1025
@@ -88,10 +88,10 @@ resource "aws_security_group_rule" "test-eks_sg_cluster_outbound" {
 
 // EKS Worker Node SG
 // - 클러스터의 워커 노드에 대한 보안 그룹
-resource "aws_security_group" "test-eks_sg_nodes" {
+resource "aws_security_group" "skk-eks_sg_nodes" {
 
-    vpc_id = aws_vpc.test-vpc.id
-    name = "Test-EKS-SG-NodeGroup"
+    vpc_id = aws_vpc.skk-vpc.id
+    name = "skk-EKS-SG-NodeGroup"
     description = "Security group for worker nodes in Cluster"
 
     egress {
@@ -102,15 +102,15 @@ resource "aws_security_group" "test-eks_sg_nodes" {
     }
 
     tags = {
-      "Name" = "Test-EKS-NodeGroup-SG"
+      "Name" = "skk-EKS-NodeGroup-SG"
     }
 }
 
 // - 노드가 서로 통신하도록 허용
-resource "aws_security_group_rule" "test-eks_sg_nodes_internal" {
+resource "aws_security_group_rule" "skk-eks_sg_nodes_internal" {
 
-    security_group_id = aws_security_group.test-eks_sg_nodes.id
-    source_security_group_id = aws_security_group.test-eks_sg_nodes.id
+    security_group_id = aws_security_group.skk-eks_sg_nodes.id
+    source_security_group_id = aws_security_group.skk-eks_sg_nodes.id
 
     type = "ingress"
     from_port = 0
@@ -120,10 +120,10 @@ resource "aws_security_group_rule" "test-eks_sg_nodes_internal" {
 }
 
 // - 워커 노드 Kubelet 및 Pod가 클러스터 컨트롤 플레인으로부터 통신을 수신하도록 허용
-resource "aws_security_group_rule" "test-eks_sg_nodes_inbound" {
+resource "aws_security_group_rule" "skk-eks_sg_nodes_inbound" {
 
-    security_group_id = aws_security_group.test-eks_sg_nodes.id
-    source_security_group_id = aws_security_group.test-eks_sg_controlplane.id
+    security_group_id = aws_security_group.skk-eks_sg_nodes.id
+    source_security_group_id = aws_security_group.skk-eks_sg_controlplane.id
 
     type = "ingress"
     from_port = 1025
@@ -133,10 +133,10 @@ resource "aws_security_group_rule" "test-eks_sg_nodes_inbound" {
 }
 
 // - SSH 워커노드 Kubelet 및 Pod가 클러스터 컨트롤 플레인으로부터 통신을 수신하도록 허용
-resource "aws_security_group_rule" "test-eks_sg_nodes_ssh_inbound" {
+resource "aws_security_group_rule" "skk-eks_sg_nodes_ssh_inbound" {
 
-    security_group_id = aws_security_group.test-eks_sg_nodes.id
-    source_security_group_id = aws_security_group.test-eks_sg_controlplane.id
+    security_group_id = aws_security_group.skk-eks_sg_nodes.id
+    source_security_group_id = aws_security_group.skk-eks_sg_controlplane.id
 
     type = "ingress"
     from_port = 443
